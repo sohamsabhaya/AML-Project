@@ -47,3 +47,9 @@ venv.bak/
 # Operating System files
 .DS_Store
 Thumbs.db
+
+# Node / JavaScript
+node_modules/
+.vite/
+dist/
+npm-debug.log*
