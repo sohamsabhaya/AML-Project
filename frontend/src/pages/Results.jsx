@@ -135,6 +135,12 @@ export default function Results() {
             </section>
 
             <div className="a-stack">
+              {analysis.warning && (
+                <div className="a-alert a-alert--warn" role="alert">
+                  <AlertTriangle size={18} aria-hidden="true" />
+                  <p>{analysis.warning}</p>
+                </div>
+              )}
               <section className="a-card a-stack" aria-label="Prediction">
                 <div className="a-row" style={{ justifyContent: 'space-between' }}>
                   <span className="a-label">Predicted class</span>

@@ -41,9 +41,9 @@ class ModelServiceProtocol(Protocol):
 
 
 def _is_lambda_deserialization_error(exc: BaseException) -> bool:
-    """True for Keras' refusal to deserialize a Lambda layer in safe mode."""
+    """True for Keras' refusal to deserialize a Lambda layer or custom code in safe mode."""
     text = str(exc).lower()
-    return "lambda" in text and ("safe_mode" in text or "deserializ" in text)
+    return any(k in text for k in ("lambda", "safe_mode", "deserializ", "custom_objects", "opcode"))
 
 
 class ModelService:
@@ -140,18 +140,44 @@ class ModelService:
 
     def predict(self, array: np.ndarray, model_name: str) -> list[float]:
         """Class probabilities for one (224, 224, 3) raw-RGB [0, 255] array."""
+        if not isinstance(array, np.ndarray):
+            raise ValueError(f"Input tensor must be a numpy ndarray, got {type(array).__name__}")
+        expected_shape = (*config.IMG_SIZE, 3)
+        if array.shape != expected_shape:
+            raise ValueError(f"Expected input shape {expected_shape}, got {array.shape}")
+        if not np.isfinite(array).all():
+            raise ValueError("Input array contains NaN or infinite values")
+
         model = self._load(model_name)
         self._acquire()
         try:
-            probs = model.predict(array[None, ...], verbose=0)[0]
+            batch = array[None, ...]
+            try:
+                preds = model(batch, training=False)
+                probs = preds.numpy()[0] if hasattr(preds, "numpy") else np.asarray(preds)[0]
+            except Exception:
+                probs = model.predict(batch, verbose=0)[0]
         finally:
             self._inference.release()
+
         if len(probs) != len(config.CLASSES):
-            raise ModelUnavailableError("Model output does not match the expected 4 classes.")
+            raise ModelUnavailableError(
+                f"Model '{model_name}' output dimension {len(probs)} does not match expected {len(config.CLASSES)} classes."
+            )
+        if not np.isfinite(probs).all():
+            raise RuntimeError(f"Model '{model_name}' generated non-finite (NaN/Inf) probabilities.")
+
+        # Ensure valid probability distribution: clip to [0, 1] and renormalize
+        probs = np.clip(probs, 0.0, 1.0)
+        total = float(np.sum(probs))
+        if total > 0:
+            probs = probs / total
         return [float(p) for p in probs]
 
     def heatmap(self, array: np.ndarray, model_name: str, class_index: int) -> bytes:
         """Grad-CAM overlay PNG for ``class_index``."""
+        if not (0 <= class_index < len(config.CLASSES)):
+            raise ValueError(f"class_index {class_index} is out of bounds for classes {config.CLASSES}")
         model = self._load(model_name)
         with self._load_lock:
             cam = self._cams.get(model_name)

@@ -12,7 +12,12 @@ from .. import config
 from ..deps import get_model_service, get_storage
 from ..errors import ModelUnavailableError
 from ..model_service import ModelServiceProtocol
-from ..preprocess import sanitize_filename, to_model_array, validate_upload
+from ..preprocess import (
+    preprocess_for_model,
+    sanitize_filename,
+    to_model_array,
+    validate_upload,
+)
 from ..report import build_report_pdf
 from ..security import require_api_key
 from ..storage import Storage
@@ -85,14 +90,18 @@ def analyze(
     # Read at most limit+1 bytes so a huge upload cannot exhaust memory.
     data = file.file.read(config.MAX_UPLOAD_BYTES + 1)
     validated = validate_upload(file.filename, data)
+    # Base array for general compatibility and fallback
     array = to_model_array(validated.image)
 
     wanted = list(config.MODEL_IDS) if model == "both" else [model]
     results: dict[str, dict[str, float]] = {}
     failures: dict[str, str] = {}
+    model_arrays: dict[str, np.ndarray] = {}
     for name in wanted:  # one failing model must not take the other down
         try:
-            probs = service.predict(array, name)
+            arr = preprocess_for_model(validated.image, name)
+            model_arrays[name] = arr
+            probs = service.predict(arr, name)
             results[name] = {cls: round(float(p), 6) for cls, p in zip(config.CLASSES, probs)}
         except ModelUnavailableError as exc:
             failures[name] = str(exc)
@@ -105,6 +114,7 @@ def analyze(
     primary = next(name for name in wanted if name in results)  # resnet50 first
     probabilities = results[primary]
     predicted = max(probabilities, key=lambda c: probabilities[c])
+    primary_array = model_arrays.get(primary, array)
 
     warnings: list[str] = [f"Model '{n}' was not used: {msg}" for n, msg in failures.items()]
     comparison: dict[str, Any] | None = None
@@ -121,7 +131,7 @@ def analyze(
     heatmap_png: bytes | None = None
     if heatmap:
         try:
-            heatmap_png = service.heatmap(array, primary, config.CLASSES.index(predicted))
+            heatmap_png = service.heatmap(primary_array, primary, config.CLASSES.index(predicted))
         except Exception:  # noqa: BLE001 - heatmap is optional; the prediction still stands
             log.exception("Grad-CAM failed for model %s", primary)
             warnings.append("The Grad-CAM heatmap could not be generated.")
