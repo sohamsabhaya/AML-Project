@@ -1,11 +1,12 @@
 # Dataset (excluded as per user instruction)
-dataset/
-dataset/**
+[Dd]ataset/
+[Dd]ataset/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
 *$py.class
+.pytest_cache/
 
 # C extensions
 *.so
