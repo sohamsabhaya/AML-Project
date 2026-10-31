@@ -1,0 +1,9 @@
+# NOT YET RUN: dependencies for the improvement pipeline in ml/ (compatible ranges, unpinned on purpose).
+tensorflow>=2.16,<2.20
+numpy>=1.26,<3
+pandas>=2.0,<3
+scipy>=1.11
+scikit-learn>=1.4
+matplotlib>=3.8
+pillow>=10.0
+nbformat>=5.9

@@ -1,0 +1,25 @@
+.insights-big { font-size: 2.5rem; font-weight: 800; color: var(--color-primary); line-height: 1.1; margin-bottom: 0.35rem; }
+.insights-note { font-size: 0.875rem; margin-top: 0.75rem; }
+.insights-table-wrap { overflow-x: auto; margin-top: 1rem; }
+.insights-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.insights-table th, .insights-table td { padding: 0.5rem 0.6rem; text-align: left; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+.insights-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.insights-table thead th { color: var(--color-muted); font-weight: 600; }
+.insights-group { text-align: center !important; color: var(--color-primary) !important; border-left: 1px solid var(--color-border); }
+.insights-weak { color: var(--color-danger); font-weight: 700; }
+.insights-list, .insights-steps { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; }
+
+.cm { margin: 0; }
+.cm figcaption { margin-bottom: 0.5rem; }
+.cm__scroll { overflow-x: auto; }
+.cm__table { border-collapse: separate; border-spacing: 3px; font-size: 0.85rem; width: 100%; }
+.cm__table th { font-weight: 600; color: var(--color-muted); padding: 0.25rem 0.4rem; text-align: left; font-size: 0.78rem; }
+.cm__table thead th:not(.cm__axis) { text-align: center; }
+.cm__axis { text-align: center; color: var(--color-primary) !important; }
+.cm__cell {
+  text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 52px; padding: 0.7rem 0.3rem; border-radius: 6px;
+  background: color-mix(in srgb, var(--color-accent) calc(var(--share) * 100%), var(--color-surface-2));
+  color: var(--color-text);
+}
+.cm__cell--hot { color: #fff; }
+.cm__cell--diag { outline: 1px solid var(--color-border-strong); }

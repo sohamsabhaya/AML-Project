@@ -1,0 +1,63 @@
+/* Styles for components/ui. Uses tokens from styles/tokens.css. */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 42px; padding: 0.5rem 1rem; border: 1px solid transparent; border-radius: var(--radius-control);
+  font-weight: 600; font-size: 0.9375rem; text-decoration: none; line-height: 1.2;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.btn--sm { min-height: 34px; padding: 0.25rem 0.75rem; font-size: 0.85rem; }
+.btn--lg { min-height: 50px; padding: 0.75rem 1.5rem; font-size: 1.0625rem; }
+.btn:disabled { opacity: 0.6; }
+.btn--primary { background: var(--color-accent); color: #fff; box-shadow: 0 1px 2px rgba(37, 99, 235, 0.35); }
+.btn--primary:hover:not(:disabled) { background: var(--color-accent-hover); color: #fff; }
+.btn--secondary { background: var(--color-card); color: var(--color-primary); border-color: var(--color-border); }
+.btn--secondary:hover:not(:disabled) { background: var(--color-hover); color: var(--color-primary); }
+.btn--ghost { background: transparent; color: var(--color-accent-text); }
+.btn--ghost:hover:not(:disabled) { background: rgba(37, 99, 235, 0.08); color: var(--color-accent-hover); }
+.btn--danger { background: var(--color-danger); color: #fff; }
+.btn--danger:hover:not(:disabled) { background: #991B1B; color: #fff; }
+
+.spinner {
+  display: inline-block; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent;
+  animation: spin 0.7s linear infinite; flex: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.card { background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); min-width: 0; }
+.card__header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; padding: 1.1rem 1.25rem 0; }
+.card__title { font-size: 1.0625rem; }
+.card__subtitle { font-size: 0.875rem; margin-top: 0.15rem; }
+.card__body { padding: 1.1rem 1.25rem 1.25rem; }
+
+.stat { display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; }
+.stat__icon { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: rgba(37, 99, 235, 0.1); color: var(--color-accent); flex: none; }
+.stat__text { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.stat__label { font-size: 0.85rem; font-weight: 600; color: var(--color-muted); }
+.stat__value { font-size: 1.65rem; font-weight: 700; color: var(--color-primary); line-height: 1.2; }
+.stat__hint { font-size: 0.8rem; }
+
+.badge { display: inline-block; padding: 0.15rem 0.65rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; border: 1px solid transparent; white-space: nowrap; }
+.badge--glioma { background: #FEE2E2; color: #991B1B; border-color: #FECACA; }
+.badge--meningioma { background: #FEF3C7; color: #92400E; border-color: #FDE68A; }
+.badge--notumor { background: #DCFCE7; color: #166534; border-color: #BBF7D0; }
+.badge--pituitary { background: #EDE9FE; color: #5B21B6; border-color: #DDD6FE; }
+.badge--neutral { background: #E2E8F0; color: #334155; border-color: #CBD5E1; }
+
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.table th { padding: 0.65rem 1rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-muted); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+.table td { padding: 0.8rem 1rem; border-bottom: 1px solid #EDF2F7; vertical-align: middle; }
+.table tbody tr:last-child td { border-bottom: 0; }
+.table tbody tr:hover { background: #F8FAFC; }
+
+.empty { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; padding: 2rem 1rem; }
+.empty__icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: #EEF2F7; color: var(--color-muted); }
+.empty--error .empty__icon { background: #FEE2E2; color: var(--color-danger); }
+.empty p { max-width: 42ch; }
+.empty__action { margin-top: 0.5rem; }
+
+.disclaimer { display: flex; gap: 0.75rem; align-items: flex-start; padding: 0.85rem 1rem; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: var(--radius-control); color: #78350F; font-size: 0.9rem; }
+.disclaimer svg { flex: none; margin-top: 2px; color: var(--color-warning); }
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; }
+.page-header__sub { margin-top: 0.3rem; }

@@ -1,0 +1,187 @@
+{
+  "status": "verified_from_notebook_outputs",
+  "source": "Brain_Tumor_Classification_AML.ipynb, cells 6, 12, 14, 16, 20, 24, 26, 28, 30",
+  "dataset": {
+    "train_images": 5600,
+    "test_images": 1600,
+    "classes": [
+      "glioma",
+      "meningioma",
+      "notumor",
+      "pituitary"
+    ],
+    "image_size": [
+      224,
+      224
+    ],
+    "per_class_train": 1400,
+    "per_class_test": 400,
+    "train_subset_images": 4480,
+    "validation_images": 1120,
+    "duplicate_hashes_in_training": 138,
+    "duplicate_copies_in_training": 171,
+    "cross_split_duplicates": 0
+  },
+  "models": [
+    {
+      "id": "resnet50",
+      "name": "ResNet50 (transfer learning, frozen backbone)",
+      "accuracy": 0.9,
+      "macro_precision": 0.9061,
+      "macro_recall": 0.9,
+      "macro_f1": 0.8975,
+      "total_params": 23851012,
+      "trainable_params": 263044,
+      "per_class": [
+        {
+          "class": "glioma",
+          "precision": 0.95,
+          "recall": 0.71,
+          "f1": 0.81,
+          "support": 400,
+          "roc_auc_ovr": 0.951
+        },
+        {
+          "class": "meningioma",
+          "precision": 0.79,
+          "recall": 0.91,
+          "f1": 0.85,
+          "support": 400,
+          "roc_auc_ovr": 0.969
+        },
+        {
+          "class": "notumor",
+          "precision": 0.92,
+          "recall": 1.0,
+          "f1": 0.96,
+          "support": 400,
+          "roc_auc_ovr": 0.999
+        },
+        {
+          "class": "pituitary",
+          "precision": 0.96,
+          "recall": 0.98,
+          "f1": 0.97,
+          "support": 400,
+          "roc_auc_ovr": 0.999
+        }
+      ],
+      "confusion_matrix": [
+        [
+          285,
+          87,
+          24,
+          4
+        ],
+        [
+          14,
+          363,
+          11,
+          12
+        ],
+        [
+          0,
+          1,
+          399,
+          0
+        ],
+        [
+          1,
+          6,
+          0,
+          393
+        ]
+      ],
+      "notes": [
+        "Metrics: cell 28. Per-class values: cell 24 classification report. Misclassified 160 of 1600 test images (cell 30).",
+        "Confusion matrix and ROC AUC were read from the figures saved in cells 24 and 26 and cross-checked against the printed reports (rows sum to 400, diagonal 1440 = 90.00%).",
+        "Glioma recall is 0.71: 87 glioma scans were predicted as meningioma. Meningioma precision is 0.79.",
+        "Backbone frozen, Adam lr 1e-4; validation accuracy was still rising at epoch 15 (0.9580, cell 20). The validation split is optimistic because the training folder contains duplicate images (cell 6); the test figure above is the honest one.",
+        "Single run; no confidence intervals; softmax scores are not calibrated."
+      ]
+    },
+    {
+      "id": "custom_cnn",
+      "name": "Custom CNN (3 conv blocks, trained from scratch)",
+      "accuracy": 0.7431,
+      "macro_precision": 0.7581,
+      "macro_recall": 0.7431,
+      "macro_f1": 0.7055,
+      "total_params": 111172,
+      "trainable_params": 110724,
+      "per_class": [
+        {
+          "class": "glioma",
+          "precision": 0.69,
+          "recall": 0.76,
+          "f1": 0.72,
+          "support": 400,
+          "roc_auc_ovr": 0.875
+        },
+        {
+          "class": "meningioma",
+          "precision": 0.8,
+          "recall": 0.25,
+          "f1": 0.38,
+          "support": 400,
+          "roc_auc_ovr": 0.895
+        },
+        {
+          "class": "notumor",
+          "precision": 0.68,
+          "recall": 1.0,
+          "f1": 0.81,
+          "support": 400,
+          "roc_auc_ovr": 0.98
+        },
+        {
+          "class": "pituitary",
+          "precision": 0.87,
+          "recall": 0.97,
+          "f1": 0.91,
+          "support": 400,
+          "roc_auc_ovr": 0.992
+        }
+      ],
+      "confusion_matrix": [
+        [
+          303,
+          20,
+          64,
+          13
+        ],
+        [
+          129,
+          99,
+          125,
+          47
+        ],
+        [
+          0,
+          0,
+          400,
+          0
+        ],
+        [
+          7,
+          5,
+          1,
+          387
+        ]
+      ],
+      "notes": [
+        "Metrics: cell 28 (model_comparison_results.csv matches). Per-class values: cell 24 classification report (2 decimals as printed).",
+        "Confusion matrix and ROC AUC were read from the figures saved in cells 24 and 26 (image outputs, not text) and cross-checked: every row sums to 400 and the diagonal sums to 1189 = 74.31% of 1600.",
+        "Meningioma recall is 0.25: the model labels most meningioma scans as glioma or notumor.",
+        "The saved training log (cell 18) stops during epoch 8 and validation accuracy swings between 0.25 and 0.83, so training was unstable and its final epoch is not recorded in the notebook.",
+        "Single run, single seed; no confidence intervals. Softmax scores are not calibrated (the notebook says so in cell 32)."
+      ]
+    }
+  ],
+  "not_available": [
+    "Calibration (ECE), bootstrap confidence intervals, Grad-CAM metrics and external validation are not in the notebook: null, not run.",
+    "ROC AUC values appear only inside figure legends (cell 26), not as text output."
+  ],
+  "calibration_ece": null,
+  "confidence_intervals": null
+}

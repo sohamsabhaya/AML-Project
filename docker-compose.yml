@@ -1,0 +1,56 @@
+# BrainScan AI - local stack. Written carefully but NOT yet run by the team.
+#
+#   docker compose up --build
+#   (optional) cp backend/.env.example backend/.env   # to change settings; the file is not required
+#
+# Backend: built from backend/Dockerfile (python:3.11-slim, code in /app, uvicorn on 8000, one worker,
+#          DATA_DIR=/app/data, runs as a non-root user).
+# Frontend: built from frontend/Dockerfile. This file ASSUMES that image serves the built app on port 80
+#          and proxies /api to http://backend:8000 (the frontend calls relative /api URLs).
+#          If the frontend Dockerfile uses another port, change the "8080:80" mapping below.
+#
+# The .keras models are NOT baked into the image: they are mounted read-only and found through MODEL_DIR.
+# The metrics CSV and insights JSON are mounted next to them and located through METRICS_CSV / INSIGHTS_JSON.
+
+services:
+  backend:
+    build:
+      context: ./backend
+    image: brainscan-backend:dev
+    env_file:
+      - path: ./backend/.env
+        required: false          # needs Docker Compose 2.24 or newer; delete this block if yours is older
+    environment:
+      MODEL_DIR: /models
+      METRICS_CSV: /models/model_comparison_results.csv
+      INSIGHTS_JSON: /models/model_insights.json
+      DATA_DIR: /app/data
+      # Allow the containerised frontend (and the Vite dev server) to call the API directly.
+      CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173,http://127.0.0.1:5173
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./resnet50_model.keras:/models/resnet50_model.keras:ro
+      - ./custom_cnn_model.keras:/models/custom_cnn_model.keras:ro
+      - ./model_comparison_results.csv:/models/model_comparison_results.csv:ro
+      - ./ml/results/model_insights.json:/models/model_insights.json:ro
+      - backend-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    image: brainscan-frontend:dev
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  backend-data:
