@@ -5,7 +5,6 @@ import { Loader2, RotateCcw, ScanSearch } from 'lucide-react'
 import '../components/analysis/analysis.css'
 import DropZone from '../components/analysis/DropZone.jsx'
 import ImagePreview from '../components/analysis/ImagePreview.jsx'
-import DisclaimerNote from '../components/analysis/DisclaimerNote.jsx'
 import DemoBadge from '../components/analysis/DemoBadge.jsx'
 import { analyzeImage } from '../lib/api.js'
 import { MODEL_OPTIONS } from '../lib/classes.js'
@@ -90,7 +89,7 @@ export default function NewAnalysis() {
       <header className="a-header">
         <div>
           <h1>MRI Image Analysis</h1>
-          <p>Upload a brain MRI image to get an AI-generated classification with an explanatory heatmap.</p>
+          <p>Upload a brain MRI image for classification and explanatory heatmap analysis.</p>
         </div>
         <DemoBadge show={demo} />
       </header>
@@ -176,8 +175,6 @@ export default function NewAnalysis() {
             </div>
           </>
         )}
-
-        <DisclaimerNote />
       </div>
     </div>
   )

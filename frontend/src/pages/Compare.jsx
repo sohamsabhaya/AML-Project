@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import '../components/analysis/analysis.css'
 import ClassBadge from '../components/analysis/ClassBadge.jsx'
-import DisclaimerNote from '../components/analysis/DisclaimerNote.jsx'
 import ProbabilityBars from '../components/analysis/ProbabilityBars.jsx'
 import { getAnalysis, listAnalyses } from '../lib/api.js'
 import { formatDate, formatPercent } from '../lib/format.js'
@@ -42,7 +41,7 @@ function Column({ slot, state }) {
   const uncertain = a.low_confidence ?? false
   return (
     <section className="a-card a-stack" aria-label={`Analysis ${slot}: ${a.filename}`}>
-      <img src={a.image_url} alt={`MRI ${a.filename}`} style={{ width: '100%', maxHeight: 320, objectFit: 'contain', background: '#050810', borderRadius: 'var(--radius-control)' }} />
+      <img src={a.image_url} alt={`MRI ${a.filename}`} style={{ width: '100%', maxHeight: 320, objectFit: 'contain', background: '#0F172A', borderRadius: 'var(--radius-control)' }} />
       <div className="a-row">
         {uncertain ? (
           <span className="a-badge a-badge--lg" style={{ background: 'var(--tone-warning-bg)', color: 'var(--tone-warning-text)' }}>Uncertain result</span>
@@ -136,7 +135,6 @@ export default function Compare() {
           <Column slot="A" state={stateA} />
           <Column slot="B" state={stateB} />
         </div>
-        <DisclaimerNote />
       </div>
     </div>
   )

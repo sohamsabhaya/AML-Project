@@ -24,6 +24,10 @@ export class ApiError extends Error {
 }
 
 async function checkBackend() {
+  if (forcedMock) {
+    demo = true
+    return
+  }
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 4000)
   try {
@@ -38,14 +42,16 @@ async function checkBackend() {
 
 function ensureMode() {
   if (forcedMock) return Promise.resolve()
-  if (!probe) probe = checkBackend()
+  if (!probe || demo) probe = checkBackend()
   return probe
 }
 
 export const isDemoMode = () => demo
 
-export async function detectDemoMode() {
-  await ensureMode()
+export async function detectDemoMode(force = false) {
+  if (forcedMock) return true
+  if (force || !probe || demo) probe = checkBackend()
+  await probe
   return demo
 }
 
@@ -126,10 +132,23 @@ export async function getAnalysis(id) {
 
 export async function analyzeImage(file, { model = 'resnet50', heatmap = true, signal } = {}) {
   await ensureMode()
-  if (demo) return mock.mockAnalyze(file, { model, heatmap, signal })
-  const form = new FormData()
-  form.append('file', file)
-  return request('/analyze', { method: 'POST', params: { model, heatmap }, body: form, signal })
+  if (!forcedMock && demo) {
+    await checkBackend()
+  }
+  if (!forcedMock && !demo) {
+    const form = new FormData()
+    form.append('file', file)
+    try {
+      return await request('/analyze', { method: 'POST', params: { model, heatmap }, body: form, signal })
+    } catch (err) {
+      if (err.name === 'AbortError') throw err
+      if (err.status && err.status >= 400) {
+        throw err
+      }
+      demo = true
+    }
+  }
+  return mock.mockAnalyze(file, { model, heatmap, signal })
 }
 
 export async function deleteAnalysis(id) {

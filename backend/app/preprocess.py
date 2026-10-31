@@ -18,7 +18,7 @@ from pathlib import Path
 
 import numpy as np
 from fastapi import HTTPException
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, ImageOps, UnidentifiedImageError
 
 from . import config
 
@@ -79,16 +79,88 @@ def validate_upload(filename: str | None, data: bytes) -> ValidatedImage:
     return ValidatedImage(image, stored_ext, media_type)
 
 
-def to_model_array(image: Image.Image) -> np.ndarray:
-    """Convert to a (224, 224, 3) float32 RGB array with values in [0, 255].
-
-    The notebook used cv2.resize (INTER_LINEAR, no anti-aliasing). An affine
-    transform with BILINEAR resampling reproduces that sampling, whereas
-    Image.resize would add anti-aliasing and give slightly different pixels.
+def normalize_image_mode(image: Image.Image) -> Image.Image:
+    """Standardise color channels to RGB.
+    
+    - Handles EXIF orientation tags.
+    - Handles alpha/transparency: composites onto a black background (typical MRI background)
+      so transparent areas do not become garbage pixel values.
+    - Converts grayscale or palette images to 3 identical RGB channels.
     """
-    rgb = image.convert("RGB")  # grayscale -> 3 channels, alpha dropped (as cv2.imread)
+    try:
+        image = ImageOps.exif_transpose(image)
+    except Exception:
+        pass
+
+    if image.mode in ("RGBA", "LA") or (image.mode == "P" and "transparency" in image.info):
+        rgba = image.convert("RGBA")
+        bg = Image.new("RGBA", rgba.size, (0, 0, 0, 255))
+        image = Image.alpha_composite(bg, rgba).convert("RGB")
+    elif image.mode != "RGB":
+        image = image.convert("RGB")
+    return image
+
+
+def preprocess_image_array(image: Image.Image) -> np.ndarray:
+    """Resize image to (224, 224, 3) float32 RGB array with values in [0, 255].
+    
+    Uses bilinear resampling matching OpenCV / TensorFlow training pipeline.
+    """
+    rgb = normalize_image_mode(image)
     w, h = rgb.size
     tw, th = config.IMG_SIZE
     if (w, h) != (tw, th):
         rgb = rgb.transform((tw, th), Image.AFFINE, (w / tw, 0, 0, 0, h / th, 0), resample=Image.BILINEAR)
-    return np.asarray(rgb, dtype=np.float32)
+    arr = np.asarray(rgb, dtype=np.float32)
+    return validate_model_tensor(arr, "common")
+
+
+def validate_model_tensor(array: np.ndarray, model_name: str) -> np.ndarray:
+    """Validate that preprocessed tensor conforms strictly to model expectations."""
+    if array is None or not isinstance(array, np.ndarray):
+        raise ValueError(f"Preprocessed tensor for {model_name} must be a numpy ndarray.")
+    expected_shape = (*config.IMG_SIZE, 3)
+    if array.shape != expected_shape:
+        raise ValueError(f"Expected tensor shape {expected_shape} for {model_name}, got {array.shape}.")
+    if array.dtype != np.float32:
+        array = array.astype(np.float32)
+    if not np.isfinite(array).all():
+        raise ValueError(f"Input tensor for {model_name} contains NaN or infinite values.")
+    return array
+
+
+def preprocess_custom_cnn(image: Image.Image) -> np.ndarray:
+    """Model 1 preprocessing: Custom CNN baseline.
+    
+    Accepts raw RGB [0, 255] float32 array of shape (224, 224, 3).
+    The internal Rescaling(1/255) layer inside Custom CNN maps [0, 255] to [0, 1].
+    """
+    arr = preprocess_image_array(image)
+    return validate_model_tensor(arr, "custom_cnn")
+
+
+def preprocess_resnet50(image: Image.Image) -> np.ndarray:
+    """Model 2 preprocessing: ResNet50 Transfer Learning.
+    
+    Accepts raw RGB [0, 255] float32 array of shape (224, 224, 3).
+    The internal Lambda(resnet50.preprocess_input) layer inside ResNet50 converts RGB
+    to BGR and applies ImageNet zero-centering.
+    """
+    arr = preprocess_image_array(image)
+    return validate_model_tensor(arr, "resnet50")
+
+
+def preprocess_for_model(image: Image.Image, model_name: str) -> np.ndarray:
+    """Dispatch to the dedicated preprocessing pipeline for the specified model."""
+    if model_name == "custom_cnn":
+        return preprocess_custom_cnn(image)
+    elif model_name == "resnet50":
+        return preprocess_resnet50(image)
+    else:
+        # Fallback to standard RGB [0, 255] array
+        return preprocess_image_array(image)
+
+
+def to_model_array(image: Image.Image) -> np.ndarray:
+    """Backwards-compatible wrapper returning (224, 224, 3) float32 RGB array [0, 255]."""
+    return preprocess_image_array(image)

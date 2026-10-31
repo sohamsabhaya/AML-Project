@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom'
 import { Activity, CalendarDays, Gauge, PlusCircle, AlertTriangle, ScanSearch, BarChart3 } from 'lucide-react'
 import { Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { getModels, getStats, isDemoMode, listAnalyses } from '../lib/api.js'
-import { Badge, Button, Card, DataTable, Disclaimer, EmptyState, PageHeader, StatCard } from '../components/ui/index.js'
-import { useProfile } from '../layout/prefs.js'
+import { Badge, Button, Card, DataTable, EmptyState, PageHeader, StatCard } from '../components/ui/index.js'
 
 const CLASS_META = {
   glioma: { label: 'Glioma', color: '#DC2626' },
@@ -12,7 +11,7 @@ const CLASS_META = {
   notumor: { label: 'No Tumor', color: '#16A34A' },
   pituitary: { label: 'Pituitary Tumor', color: '#7C3AED' },
 }
-const MODEL_COLORS = ['#2563EB', '#94A3B8']
+const MODEL_COLORS = ['#0D9488', '#94A3B8']
 
 // Shown only when the API returns no model metrics. Known results from the project notebook (accuracy only).
 const FALLBACK_MODELS = [
@@ -81,7 +80,7 @@ function ClassDistribution({ byClass }) {
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
           <XAxis dataKey="name" tick={{ fontSize: 12 }} tickLine={false} />
           <YAxis allowDecimals={false} tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
-          <Tooltip cursor={{ fill: 'rgba(37,99,235,0.06)' }} />
+          <Tooltip cursor={{ fill: 'rgba(13,148,136,0.06)' }} />
           <Bar dataKey="count" name="Scans" radius={[6, 6, 0, 0]}>
             {data.map((d) => (
               <Cell key={d.key} fill={CLASS_META[d.key].color} />
@@ -108,7 +107,7 @@ function ModelPerformance({ models }) {
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
             <XAxis dataKey="metric" tick={{ fontSize: 12 }} tickLine={false} />
             <YAxis domain={[0, 100]} unit="%" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
-            <Tooltip formatter={(v) => `${v}%`} cursor={{ fill: 'rgba(37,99,235,0.06)' }} />
+            <Tooltip formatter={(v) => `${v}%`} cursor={{ fill: 'rgba(13,148,136,0.06)' }} />
             <Legend />
             {shown.map((m, i) => (
               <Bar key={m.name} dataKey={m.name} fill={MODEL_COLORS[i % MODEL_COLORS.length]} radius={[6, 6, 0, 0]} />
@@ -121,7 +120,6 @@ function ModelPerformance({ models }) {
 }
 
 export default function Dashboard() {
-  const name = useProfile()
   const { loading, error, stats, recent, models } = useDashboardData()
   const hasScans = (stats?.total_scans ?? 0) > 0
 
@@ -145,8 +143,8 @@ export default function Dashboard() {
   return (
     <div className="page">
       <PageHeader
-        title={name === 'Guest' ? 'Welcome to BrainScan AI' : `Welcome back, ${name}`}
-        subtitle="AI-assisted brain MRI classification for learning and research."
+        title="Dashboard"
+        subtitle="Brain MRI classification and performance metrics."
         actions={
           <>
             {isDemoMode() && <Badge kind="neutral">Demo data</Badge>}
@@ -195,8 +193,6 @@ export default function Dashboard() {
         </Card>
         {loading ? <Card title="Model performance"><span className="skeleton" style={{ height: 280 }} /></Card> : <ModelPerformance models={models} />}
       </div>
-
-      <Disclaimer />
     </div>
   )
 }

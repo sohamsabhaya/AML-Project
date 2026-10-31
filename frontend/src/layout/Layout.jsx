@@ -4,7 +4,7 @@ import { Sidebar } from './Sidebar.jsx'
 import { Topbar } from './Topbar.jsx'
 import './layout.css'
 
-/** App shell: sidebar + topbar + routed page + persistent disclaimer footer. */
+/** App shell: sidebar + topbar + main content. */
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
@@ -25,9 +25,6 @@ export default function Layout() {
         <main id="main" tabIndex={-1}>
           <Outlet />
         </main>
-        <footer className="app-footer">
-          Educational use only. AI-generated predictions are not a medical diagnosis.
-        </footer>
       </div>
     </div>
   )
