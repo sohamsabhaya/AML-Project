@@ -7,7 +7,7 @@ import ClassBadge from '../components/analysis/ClassBadge.jsx'
 import DemoBadge from '../components/analysis/DemoBadge.jsx'
 import DownloadPdfButton from '../components/analysis/DownloadPdfButton.jsx'
 import { getAnalysis } from '../lib/api.js'
-import { CLASS_LABELS, CLASS_ORDER, DISCLAIMER, LIMITATIONS } from '../lib/classes.js'
+import { CLASS_LABELS, CLASS_ORDER, LIMITATIONS } from '../lib/classes.js'
 import { formatDate, formatPercent } from '../lib/format.js'
 import { useDemoMode } from '../lib/useDemoMode.js'
 
@@ -117,11 +117,6 @@ export default function Report() {
           <ul>
             {LIMITATIONS.map((item) => <li key={item}>{item}</li>)}
           </ul>
-        </section>
-
-        <section>
-          <h2>Disclaimer</h2>
-          <p style={{ margin: 0, fontSize: '0.9rem' }}>{DISCLAIMER}</p>
         </section>
       </article>
     </div>

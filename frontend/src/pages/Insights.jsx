@@ -2,12 +2,12 @@
 // Data comes from GET /api/models/insights, falling back to the bundled copy of ml/results/model_insights.json.
 import { useEffect, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Card, Disclaimer, PageHeader } from '../components/ui/index.js'
+import { Card, PageHeader } from '../components/ui/index.js'
 import { getInsights } from '../lib/api.js'
 import { CLASS_LABELS } from '../lib/classes.js'
 import './insights.css'
 
-const SERIES_COLORS = { custom_cnn: '#94A3B8', resnet50: '#2563EB' }
+const SERIES_COLORS = { custom_cnn: '#94A3B8', resnet50: '#0D9488' }
 const SHORT_NAMES = { custom_cnn: 'Custom CNN', resnet50: 'ResNet50' }
 const pct = (v, d = 2) => (typeof v === 'number' ? `${(v * 100).toFixed(d)}%` : 'n/a')
 const num = (v) => (typeof v === 'number' ? v.toLocaleString() : 'n/a')
@@ -19,7 +19,7 @@ const PIPELINE = [
   ['Preprocess', 'The image is resized to 224 x 224 pixels, the size the models were trained on.'],
   ['Classify', 'ResNet50 (transfer learning) or the custom CNN produces four softmax scores: glioma, meningioma, no tumor and pituitary tumor.'],
   ['Explain', 'Grad-CAM highlights the image regions that influenced the prediction. It is an explanation of the model, not a tumor outline.'],
-  ['Review', 'If the top score is below the confidence threshold the app reports an uncertain result. Every output carries a medical disclaimer.'],
+  ['Review', 'If the top score is below the confidence threshold the app reports an uncertain result.'],
 ]
 
 function ConfusionMatrix({ model, classes }) {
@@ -114,7 +114,6 @@ export default function Insights() {
       <div className="page">
         <PageHeader title="Model insights" />
         <Card><p className="muted">Evaluation results are not available.</p></Card>
-        <Disclaimer />
       </div>
     )
   }
@@ -264,8 +263,6 @@ export default function Insights() {
           </p>
         </Card>
       </div>
-
-      <Disclaimer />
     </div>
   )
 }

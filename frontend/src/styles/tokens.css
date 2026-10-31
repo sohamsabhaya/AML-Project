@@ -1,104 +1,41 @@
-/* Design tokens from the UI guide (Brain_Tumor_Detection_UI_Guide.pdf), with a dark theme.
-   Theme selection: [data-theme="light"|"dark"] on <html> (set from Settings), otherwise the OS preference.
-   Contrast notes (WCAG 2.2 AA): focus ring and control borders are at least 3:1 against their surface. */
+/* Design tokens - Minimal, stylish light theme (Teal / Slate). */
 :root {
   color-scheme: light;
-  --color-primary: #0B1220;        /* headings */
-  --color-accent: #2563EB;         /* primary buttons, active nav (white text 5.2:1) */
-  --color-accent-hover: #1D4ED8;
-  --color-accent-text: #1D4ED8;    /* links and ghost buttons on the page surface */
-  --color-focus: #1D4ED8;          /* focus ring, 6.7:1 on white */
-  --color-bg: #F8FAFC;
-  --color-card: #FFFFFF;
-  --color-surface-2: #F1F5F9;
-  --color-border: #D7E0EA;         /* decorative dividers */
-  --color-border-strong: #8393A7;  /* control borders, 3.1:1 on white */
-  --color-text: #0B1220;
-  --color-muted: #5B6B7F;
+  --color-primary: #0F172A;        /* headings, titles */
+  --color-accent: #0D9488;         /* stylish primary accent (Teal) */
+  --color-accent-hover: #0F766E;   /* deep teal hover */
+  --color-accent-text: #0F766E;    /* links, buttons on light */
+  --color-accent-subtle: #F0FDFA;  /* soft teal tint background */
+  --color-focus: #0D9488;          /* focus ring */
+  --color-bg: #F8FAFC;             /* clean light background */
+  --color-card: #FFFFFF;           /* crisp white cards */
+  --color-surface-2: #F1F5F9;      /* subtle section background */
+  --color-border: #E2E8F0;         /* dividers, subtle card borders */
+  --color-border-strong: #CBD5E1;  /* input and control borders */
+  --color-text: #1E293B;           /* body text */
+  --color-muted: #64748B;          /* secondary captions */
   --color-success: #15803D;
   --color-warning: #B45309;
   --color-danger: #B91C1C;
-  --color-track: #E2E8F0;          /* bar and ring tracks */
-  --color-hover: #F1F5F9;
+  --color-track: #E2E8F0;          /* bar tracks */
+  --color-hover: #F8FAFC;
 
-  --tone-warning-bg: #FFFBEB; --tone-warning-border: #F5D98A; --tone-warning-text: #78350F;
-  --tone-error-bg: #FEF2F2;   --tone-error-border: #F5B5B5;   --tone-error-text: #7F1D1D;
-  --tone-info-bg: #EFF6FF;    --tone-info-border: #B6CDF5;    --tone-info-text: #1E3A8A;
-  --tone-success-bg: #F0FDF4; --tone-success-border: #A7DFB8; --tone-success-text: #14532D;
+  --tone-warning-bg: #FFFBEB; --tone-warning-border: #FDE68A; --tone-warning-text: #92400E;
+  --tone-error-bg: #FEF2F2;   --tone-error-border: #FECACA;   --tone-error-text: #991B1B;
+  --tone-info-bg: #F0FDFA;    --tone-info-border: #99F6E4;    --tone-info-text: #115E59;
+  --tone-success-bg: #F0FDF4; --tone-success-border: #BBF7D0; --tone-success-text: #166534;
 
-  /* Class colours. Badges are soft pills; bars are solid fills at least 3:1 on --color-track. */
-  --cls-glioma-bg: #FEE2E2;     --cls-glioma-text: #7F1D1D;     --cls-glioma-bar: #B91C1C;
-  --cls-meningioma-bg: #FEF3C7; --cls-meningioma-text: #78350F; --cls-meningioma-bar: #B45309;
-  --cls-notumor-bg: #E2E8F0;    --cls-notumor-text: #1E293B;    --cls-notumor-bar: #475569;
-  --cls-pituitary-bg: #EDE9FE;  --cls-pituitary-text: #4C1D95;  --cls-pituitary-bar: #6D28D9;
+  /* Class colours: soft modern pills */
+  --cls-glioma-bg: #FEE2E2;     --cls-glioma-text: #991B1B;     --cls-glioma-bar: #DC2626;
+  --cls-meningioma-bg: #FEF3C7; --cls-meningioma-text: #92400E; --cls-meningioma-bar: #D97706;
+  --cls-notumor-bg: #DCFCE7;    --cls-notumor-text: #166534;    --cls-notumor-bar: #16A34A;
+  --cls-pituitary-bg: #EDE9FE;  --cls-pituitary-text: #5B21B6;  --cls-pituitary-bar: #7C3AED;
 
-  --sidebar-bg: #0B1220;
-  --radius-card: 16px;
-  --radius-control: 12px;
-  --shadow-card: 0 1px 2px rgba(11, 18, 32, 0.06), 0 4px 12px rgba(11, 18, 32, 0.04);
-  /* Inter is used if installed; otherwise the system stack. No web font is downloaded (see README). */
+  --sidebar-bg: #FFFFFF;
+  --sidebar-border: #E2E8F0;
+  --radius-card: 14px;
+  --radius-control: 10px;
+  --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --sidebar-width: 248px;
-}
-
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --color-primary: #F1F5F9;
-  --color-accent-text: #93C5FD;
-  --color-focus: #93C5FD;
-  --color-bg: #0B1220;
-  --color-card: #111B2E;
-  --color-surface-2: #1A2740;
-  --color-border: #2A3A55;
-  --color-border-strong: #6B7C93;
-  --color-text: #E6EDF7;
-  --color-muted: #9FB0C5;
-  --color-success: #4ADE80;
-  --color-warning: #FBBF24;
-  --color-danger: #F87171;
-  --color-track: #334155;
-  --color-hover: #17233A;
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
-
-  --tone-warning-bg: #2B2108; --tone-warning-border: #6B5314; --tone-warning-text: #FCE9A8;
-  --tone-error-bg: #2E1114;   --tone-error-border: #7A2A2F;   --tone-error-text: #FCCACA;
-  --tone-info-bg: #12233F;    --tone-info-border: #2F4F86;    --tone-info-text: #CFE0FF;
-  --tone-success-bg: #0F2A1B; --tone-success-border: #2B6B45; --tone-success-text: #C5F1D4;
-
-  --cls-glioma-bg: #3B1417;     --cls-glioma-text: #FECACA;     --cls-glioma-bar: #F87171;
-  --cls-meningioma-bg: #3A2A0A; --cls-meningioma-text: #FDE68A; --cls-meningioma-bar: #FBBF24;
-  --cls-notumor-bg: #26334A;    --cls-notumor-text: #E2E8F0;    --cls-notumor-bar: #94A3B8;
-  --cls-pituitary-bg: #2A1F4D;  --cls-pituitary-text: #DDD6FE;  --cls-pituitary-bar: #A78BFA;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --color-primary: #F1F5F9;
-    --color-accent-text: #93C5FD;
-    --color-focus: #93C5FD;
-    --color-bg: #0B1220;
-    --color-card: #111B2E;
-    --color-surface-2: #1A2740;
-    --color-border: #2A3A55;
-    --color-border-strong: #6B7C93;
-    --color-text: #E6EDF7;
-    --color-muted: #9FB0C5;
-    --color-success: #4ADE80;
-    --color-warning: #FBBF24;
-    --color-danger: #F87171;
-    --color-track: #334155;
-    --color-hover: #17233A;
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
-
-    --tone-warning-bg: #2B2108; --tone-warning-border: #6B5314; --tone-warning-text: #FCE9A8;
-    --tone-error-bg: #2E1114;   --tone-error-border: #7A2A2F;   --tone-error-text: #FCCACA;
-    --tone-info-bg: #12233F;    --tone-info-border: #2F4F86;    --tone-info-text: #CFE0FF;
-    --tone-success-bg: #0F2A1B; --tone-success-border: #2B6B45; --tone-success-text: #C5F1D4;
-
-    --cls-glioma-bg: #3B1417;     --cls-glioma-text: #FECACA;     --cls-glioma-bar: #F87171;
-    --cls-meningioma-bg: #3A2A0A; --cls-meningioma-text: #FDE68A; --cls-meningioma-bar: #FBBF24;
-    --cls-notumor-bg: #26334A;    --cls-notumor-text: #E2E8F0;    --cls-notumor-bar: #94A3B8;
-    --cls-pituitary-bg: #2A1F4D;  --cls-pituitary-text: #DDD6FE;  --cls-pituitary-bar: #A78BFA;
-  }
+  --sidebar-width: 240px;
 }

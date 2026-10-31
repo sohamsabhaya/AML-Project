@@ -1,7 +1,6 @@
 // Shared constants for the analysis flow: class names, labels, copy and thresholds.
 
-export const DISCLAIMER =
-  'AI-generated prediction for educational and research use only. It is not a medical diagnosis and must not replace review by a qualified clinician.'
+export const DISCLAIMER = ''
 
 export const CLASS_ORDER = ['glioma', 'meningioma', 'notumor', 'pituitary']
 

@@ -1,12 +1,11 @@
 // Results page: shows one analysis (image, heatmap, prediction, probabilities) for /results/:id.
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { AlertTriangle, FileText, Plus, Sparkles } from 'lucide-react'
+import { AlertTriangle, FileText, Plus } from 'lucide-react'
 import '../components/analysis/analysis.css'
 import ClassBadge from '../components/analysis/ClassBadge.jsx'
 import ConfidenceMeter from '../components/analysis/ConfidenceMeter.jsx'
 import DemoBadge from '../components/analysis/DemoBadge.jsx'
-import DisclaimerNote from '../components/analysis/DisclaimerNote.jsx'
 import DownloadPdfButton from '../components/analysis/DownloadPdfButton.jsx'
 import ProbabilityBars from '../components/analysis/ProbabilityBars.jsx'
 import { getAnalysis } from '../lib/api.js'
@@ -139,7 +138,6 @@ export default function Results() {
               <section className="a-card a-stack" aria-label="Prediction">
                 <div className="a-row" style={{ justifyContent: 'space-between' }}>
                   <span className="a-label">Predicted class</span>
-                  <span className="a-badge a-badge--ai"><Sparkles size={14} aria-hidden="true" /> AI-generated result</span>
                 </div>
                 {lowConfidence ? (
                   <div>
@@ -222,7 +220,6 @@ export default function Results() {
             <Link to={`/compare?a=${encodeURIComponent(analysis.id)}`} className="a-btn">Compare with another scan</Link>
             <Link to="/analyze" className="a-btn"><Plus size={18} aria-hidden="true" /> Analyze Another Image</Link>
           </div>
-          <DisclaimerNote />
         </div>
       )}
     </div>

@@ -77,11 +77,9 @@ export function getTheme() {
   return value === 'light' || value === 'dark' ? value : 'system'
 }
 
-/** Applies a theme to <html>: 'system' removes the attribute so the OS preference applies. */
-export function applyTheme(theme = getTheme()) {
-  const root = document.documentElement
-  if (theme === 'light' || theme === 'dark') root.setAttribute('data-theme', theme)
-  else root.removeAttribute('data-theme')
+/** Applies light theme permanently to <html>. */
+export function applyTheme() {
+  document.documentElement.setAttribute('data-theme', 'light')
 }
 
 export function setTheme(theme) {
